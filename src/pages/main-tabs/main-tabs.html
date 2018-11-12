@@ -1,0 +1,108 @@
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+<ion-header>
+  <ion-navbar no-border-bottom>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-segment [(ngModel)]="segment" (ionChange)="updateSchedule()">
+      <ion-segment-button value="all">
+        All
+      </ion-segment-button>
+      <ion-segment-button value="favorites">
+        Favorites
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentFilter()">
+        <ion-icon ios="ios-options-outline" md="md-options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar color="primary"
+                   [(ngModel)]="queryText"
+                   (ionInput)="updateSchedule()"
+                   placeholder="Search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content>Refreshing...</ion-refresher-content>
+  </ion-refresher>
+
+
+  <div>
+    <ion-card *ngFor="let item of items, let id=index" (click)="showDescription(item)">
+      <ion-item>
+        <ion-card-header>
+          {{item.title}}
+        </ion-card-header>
+        <ion-card-content>
+          <span>{{item.id}}</span>
+          <ion-thumbnail item-start>
+            <img [src]="item.image_url">
+          </ion-thumbnail>
+          <span align="right">{{this.convertTime(item.created) | amTimeAgo}}</span>
+        </ion-card-content>
+      </ion-item>
+    </ion-card>
+
+    <p *ngIf="noRecords">
+      No more items present
+    </p>
+    <!-- <ion-slides>
+      <ion-slide>
+        <p>This is for discover things</p>
+        
+      </ion-slide>
+      <ion-slide>
+        <p>This is donate page</p>
+      </ion-slide>
+    </ion-slides> -->
+  </div>
+
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" *ngIf="!noRecords">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+
+  <!-- <ion-list>
+      <ion-item>
+        <ion-note item-start>
+          Left Note
+        </ion-note>
+        My Item
+        <ion-note item-end>
+          Right Note
+        </ion-note>
+      </ion-item>
+    </ion-list> -->
+  <!--  <ion-fab bottom right edge>
+      <button ion-fab (click)="presentPopover()"><ion-icon name="add"></ion-icon></button>
+      <ion-fab-list side="top">
+        <button ion-fab><ion-icon name="logo-facebook"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-twitter"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-vimeo"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-googleplus"></ion-icon></button>
+      </ion-fab-list>
+    </ion-fab> -->
+
+  <ion-fab bottom end>
+    <button ion-fab (click)="gotoSecondaryPage()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>
+<!-- <ion-footer>
+  <ion-toolbar>
+    <button ion-button full primary (click)="presentPopover()">Pop Over</button>
+  </ion-toolbar>
+</ion-footer> -->
